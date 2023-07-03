@@ -4,14 +4,9 @@ package com.example.oauth.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.web.AuthenticationEntryPoint;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 
 @Configuration
 public class SecurityConfig {
@@ -24,21 +19,11 @@ public class SecurityConfig {
                 .authenticated();
 
         http
-//                .formLogin()
-//                .httpBasic()
-                .exceptionHandling()
-                .authenticationEntryPoint(
-                        new AuthenticationEntryPoint() {
-                            @Override
-                            public void commence(
-                                    HttpServletRequest request,
-                                    HttpServletResponse response,
-                                    AuthenticationException authException)
-                                    throws IOException, ServletException {
-                                System.out.println("custom entryPoint");
-                            }
-                        }
-                );
+                .httpBasic()
+                .authenticationEntryPoint(new CustomAuthenticationEntryPoint());
+
+        http
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         return http.build();
     }
 }
